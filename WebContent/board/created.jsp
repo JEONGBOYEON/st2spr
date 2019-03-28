@@ -72,7 +72,13 @@
 		}
 		f.pwd.value = str;
 		
-		f.action = "<%=cp%>/bbs/created.action";
+		if(f.mode.value=="created"){
+			f.action = "<%=cp%>/bbs/created.action";
+		}else if(f.mode.value=="update"){
+			f.action = "<%=cp%>/bbs/updated.action";
+		}
+		
+		
 		f.submit();
 	}
 
@@ -93,7 +99,7 @@
 			<dl>
 				<dt >제&nbsp;&nbsp;&nbsp;&nbsp;목</dt>
 				<dd>
-					<input type="text" name="subject" size="74" maxlength="100" class="boxTF"/>
+					<input type="text" name="subject" value="${dto.subject }" size="74" maxlength="100" class="boxTF"/>
 				</dd>
 			</dl>
 		</div>
@@ -102,7 +108,7 @@
 			<dl>
 				<dt >작성자</dt>
 				<dd>
-					<input type="text" name="name" size="35" maxlength="20" class="boxTF"/>
+					<input type="text" name="name" value="${dto.name }" size="35" maxlength="20" class="boxTF"/>
 				</dd>
 			</dl>
 		</div>
@@ -111,7 +117,7 @@
 			<dl>
 				<dt >E-Mail</dt>
 				<dd>
-					<input type="text" name="email" size="35" maxlength="50" class="boxTF"/>
+					<input type="text" name="email" value="${dto.email }" size="35" maxlength="50" class="boxTF"/>
 				</dd>
 			</dl>
 		</div>
@@ -120,7 +126,7 @@
 			<dl>
 				<dt >내&nbsp;&nbsp;&nbsp;&nbsp;용</dt>
 				<dd>
-					<textarea rows="12" cols="63" name="content" class="boxTA"></textarea>
+					<textarea rows="12" cols="63" name="content"  class="boxTA">${dto.content }</textarea>
 				</dd>
 			</dl>
 		</div>
@@ -129,7 +135,7 @@
 			<dl>
 				<dt >패스워드</dt>
 				<dd>
-					<input type="password" name="pwd" size="35" maxlength="7" class="boxTF"/>
+					<input type="password" name="pwd" value="${dto.pwd }" size="35" maxlength="7" class="boxTF"/>
 					&nbsp;(게시물 수정 및 삭제시 필요!!!)
 				</dd>
 			</dl>
@@ -137,7 +143,12 @@
 	</div>
 	
 	<div id="bbsCreated_footer">
-		<input type="hidden" name="mode" value="insert"/>
+		<input type="hidden" name="mode" value="${mode }"/>
+		<input type="hidden" name="num" value="${num} ">
+		<input type="hidden" name="pageNum" value="${pageNum} ">
+		<input type="hidden" name="searchKey" value="${searchKey} ">
+		<input type="hidden" name="searchValue" value="${searchValue} ">
+		
 	
 		<input type="button" value="등록하기" class="btn2" onclick="sendIt();"/>
 		<input type="reset" value="다시입력" class="btn2" onclick="document.myForm.subject.focus();"/>

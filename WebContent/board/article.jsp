@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	request.setCharacterEncoding("UTF-8");
 	String cp = request.getContextPath();
@@ -12,35 +13,66 @@
 <link rel="stylesheet" href="<%=cp %>/board/css/style.css" type="text/css">
 <link rel="stylesheet" href="<%=cp %>/board/css/article.css" type="text/css">
 
+<script type="text/javascript">
+
+	function updateData() {
+		var num = "${dto.num}";
+		<%-- 
+		var pageNum = "${pageNum}";
+		var param = "pageNum=" + pageNum + "&num=" + num;
+		var url = "<%=cp%>/bbs/updated.action?" + param; 
+		--%>
+		
+		var param = "${params}" + "&num=" + num;
+		var url = "<%=cp%>/bbs/updated.action?" + param;
+		
+		location.replace(url);
+	}
+
+	function deleteData() {
+		var num = "${dto.num}";
+		var pageNum = "${pageNum}";
+		var param = "pageNum=" + pageNum + "&num=" + num;
+		var url = "<%=cp%>/bbs/deleted.action?" + param;
+		
+		location.replace(url);
+	}
+</script>
+
 </head>
 <body>
 
 <div id="bbs">
 
 	<div id="bbs_title"	>
-	게 시 판
+	게 시 판 ( Struts2 + Spring2.5 )
 	</div>
 	
 	<div id="bbsArticle">
 		<div id="bbsArticle_header">
-		게시글 제목
+		${dto.subject }
 		</div>
 		
 		<div id="bbsArticle_bottomLine">
 			<dl>
 				<dt>작성자</dt>
-				<dd>배수지</dd>
+				<dd>
+				${dto.name }
+				<c:if test="${!empty dto.email }">
+				( <a href="mailto:${dto.email} }">${dto.email }</a> )
+				</c:if>
+				</dd>
 				<dt>줄수</dt>
-				<dd>10</dd>
+				<dd>${lineSu }</dd>
 			</dl>
 		</div>
 		
 		<div id="bbsArticle_bottomLine">
 			<dl>
 				<dt>등록일</dt>
-				<dd>2019-2-20</dd>
+				<dd>${dto.created }</dd>
 				<dt>조회수</dt>
-				<dd>10</dd>
+				<dd>${dto.hitCount }</dd>
 			</dl>
 		</div>
 		
@@ -48,25 +80,48 @@
 			<table width="600" border="0">
 			<tr>
 				<td style="padding: 20px 80px 20px 62px;" valign="top" height="200">
-				게시글 내용
+				${dto.content }
 				</td>
 			</tr>
 			</table>
 		</div>
 	</div>
 	
+	<div class="bbsArticle_bottomLine">
+	이전글:
+	<c:if test="${!empty preSubject }">
+		<a href="<%=cp%>/bbs/article.action?${params}&num=${preNum}">
+		${preSubject }
+		</a>
+	</c:if>
+	</div>
+	
+	<div class="bbsArticle_bottomLine">
+	다음글:
+	<c:if test="${!empty nextSubject }">
+		<a href="<%=cp%>/bbs/article.action?${params}&num=${nextNum}">
+		${nextSubject }
+		</a>
+	</c:if>	
+	</div>
+	
+	
 	<div class="bbsArticle_noLine" style="text-align: right;">
-		From : 127.0.0.1
+		from : ${dto.ipAddr }
 	</div>
 	
 	<div id ="bbsArticle_footer">
 		<div id="leftFooter">
-			<input type="button" value="수정" class="btn2" onclick="">
-			<input type="button" value="삭제" class="btn2" onclick="">
+			<input type="hidden" name="mode" value="updated">
+			<input type="hidden" name="searchKey" value=${searchKey}>
+			<input type="hidden" name="searchValue" value=${searchValue}>
+		
+			<input type="button" value="수정" class="btn2" onclick="updateData();"/>
+			<input type="button" value="삭제" class="btn2" onclick="deleteData();"/>
 		</div>
 		
 		<div id="rightFooter">
-			<input type="button" value="리스트" class="btn2" onclick="">
+			<input type="button" value="리스트" class="btn2" onclick="javascript:location.href='<%=cp %>/bbs/list.action?${params }';"/>
 		</div>
 	</div>
 

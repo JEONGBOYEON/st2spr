@@ -30,8 +30,43 @@
 	]]>
 </select>
 
+<select id="readData" parameterClass="int" resultClass="com.board.BoardDTO">
+	select num,name,pwd,email,subject,content,ipAddr,hitCount,created 
+	from board where num=#num#
+</select>
+
+<select id="preReadData" resultClass="com.board.BoardDTO" parameterClass="map">
+	select rownum rnum,data.* from(
+	select num,subject from board
+	where($searchKey$ like '%' || #searchValue# || '%')
+	and (num>#num#) order by num asc) data 
+	where rownum=1
+</select>
 
 
+<select id="nextReadData" resultClass="com.board.BoardDTO" parameterClass="map">
+	select rownum rnum,data.* from(
+	select num,subject from board
+	where($searchKey$ like '%' || #searchValue# || '%')
+<![CDATA[	
+	and (num<#num#) order by num desc) data 
+	where rownum=1
+]]>	
+</select>
+
+<update id="updateHitCount" parameterClass="int">
+	update board set hitCount = hitCount+1 where num = #num#
+</update>
+
+<update id="updateData" parameterClass="com.board.BoardDTO">
+	update board set name=#name#,pwd=#pwd#,email=#email#,
+	subject=#subject#,content=#content# where num=#num#
+</update>
+
+
+<delete id="deleteData" parameterClass="int">
+	delete board where num=#num#
+</delete>
 
 
 

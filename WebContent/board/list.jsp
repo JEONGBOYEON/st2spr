@@ -32,7 +32,7 @@
 <div id="bbsList">
 
 	<div id="bbsList_title">
-	게 시 판 ( Struts2 + Spring2.5 )
+	게 시 판 ( Struts2 + Spring2.5 ) 
 	</div>
 	
 	<div id="bbsList_header">
