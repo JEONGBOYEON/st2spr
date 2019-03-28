@@ -10,6 +10,8 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import oracle.net.aso.s;
+
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -51,6 +53,7 @@ public class BoardAction extends ActionSupport implements Preparable,ModelDriven
 		HttpServletRequest request = ServletActionContext.getRequest();
 		
 		if(dto==null||dto.getMode()==null||dto.getMode().equals("")){
+			request.setAttribute("mode", "created");
 			return INPUT;
 		}
 		
@@ -77,7 +80,7 @@ public class BoardAction extends ActionSupport implements Preparable,ModelDriven
 		
 		String pageNum = request.getParameter("pageNum");
 		int currentPage = 1;
-		if(pageNum!=null)
+		if(pageNum!=null&&!pageNum.equals(""))
 			currentPage = Integer.parseInt(pageNum);
 
 		String searchKey = request.getParameter("searchKey");
@@ -155,10 +158,141 @@ public class BoardAction extends ActionSupport implements Preparable,ModelDriven
 	}
 		
 		
+	public String article() throws Exception{
+		
+		HttpServletRequest request = ServletActionContext.getRequest();
+		
+		int num = Integer.parseInt(request.getParameter("num"));
+		String pageNum = request.getParameter("pageNum");
+		
+		String searchKey = request.getParameter("searchKey");
+		String searchValue = request.getParameter("searchValue");
+		
+		if(searchKey==null){
+			searchKey = "subject";
+			searchValue = "";
+		}
+		
+		if(request.getMethod().equalsIgnoreCase("GET"))
+			searchValue = URLDecoder.decode(searchValue,"UTF-8");
+		
+		dao.updatetData("board.updateHitCount", num);
+		
+		dto = (BoardDTO)dao.getReadData("board.readData",num);
+		
+		if(dto==null)
+			return "read-erroe";
+		
+		int lineSu = dto.getContent().split("\r\n").length;
+		
+		dto.setContent(dto.getContent().replaceAll("\r\n", "<br/>"));
+		
+		Map<String,Object> hMap = new HashMap<String, Object>();
+		hMap.put("searchKey", searchKey);
+		hMap.put("searchValue",searchValue);
+		hMap.put("num",dto.getNum());
+		
+		BoardDTO preDTO = (BoardDTO)dao.getReadData("board.preReadData",hMap);
+		int preNum = 0;
+		String preSubject = "";
+		if(preDTO!=null){
+			preNum = preDTO.getNum();
+			preSubject = preDTO.getSubject();
+		}
+		
+		BoardDTO nextDTO = (BoardDTO)dao.getReadData("board.nextReadData",hMap);
+		int nextNum = 0;
+		String nextSubject = "";
+		if(nextDTO!=null){
+			nextNum = nextDTO.getNum();
+			nextSubject = nextDTO.getSubject();
+		}
+		
+		String params = "pageNum=" + pageNum;
+		if(!searchValue.equals("")){
+			searchValue = URLEncoder.encode(searchValue,"UTF-8");
+			params += "&searchKey=" + searchKey + "&searchValue=" + searchValue;
+		}
+		
+		request.setAttribute("dto", dto);
+		request.setAttribute("pageNum", pageNum);
+		request.setAttribute("preNum", preNum);
+		request.setAttribute("preSubject", preSubject);
+		request.setAttribute("nextNum", nextNum);
+		request.setAttribute("nextSubject", nextSubject);
+		request.setAttribute("params", params);
+		request.setAttribute("lineSu", lineSu);
+		request.setAttribute("searchKey", searchKey);
+		request.setAttribute("searchValue", searchValue);
 		
 		
 		
+		return SUCCESS;
+	}
+
+
+	public String updated() throws Exception{
 		
+		HttpServletRequest request = ServletActionContext.getRequest();
+		String pageNum = request.getParameter("pageNum");
+		String searchKey = request.getParameter("searchKey");
+		String searchValue = request.getParameter("searchValue");		
+		
+		if(searchKey==null){
+			searchKey = "subject";
+			searchValue = "";
+		}
+		
+		if(request.getMethod().equalsIgnoreCase("GET"))
+			searchValue = URLDecoder.decode(searchValue,"UTF-8");
+		
+		
+		
+		if(dto.getMode()==null || dto.getMode().equals("")){
+			
+			dto = (BoardDTO)dao.getReadData("board.readData",dto.getNum());
+			
+			if(dto==null)
+				return "read-error";
+			
+			if(!searchValue.equals("")){
+				searchValue = URLEncoder.encode(searchValue,"UTF-8");
+			}
+			
+			request.setAttribute("pageNum", pageNum);
+			request.setAttribute("mode", "update");
+			request.setAttribute("dto", dto);
+			request.setAttribute("searchKey", searchKey);
+			request.setAttribute("searchValue", searchValue);
+			
+			return INPUT;
+		}
+					
+		
+		dao.updatetData("board.updateData", dto);
+		request.setAttribute("pageNum", pageNum);
+		request.setAttribute("searchKey", searchKey);
+		request.setAttribute("searchValue", searchValue);
+		
+		System.out.println(searchKey+searchValue);
+		
+		return SUCCESS;
+		
+	}
+		
+	public String deleted() throws Exception{
+
+		HttpServletRequest request = ServletActionContext.getRequest();
+
+		int num = Integer.parseInt(request.getParameter("num"));
+		String pageNum = request.getParameter("pageNum");
+			
+		
+		dao.delteData("board.deleteData",num);
+		request.setAttribute("pageNum", pageNum);
+		
+		return SUCCESS;
+	}	
 		
 		
 		
