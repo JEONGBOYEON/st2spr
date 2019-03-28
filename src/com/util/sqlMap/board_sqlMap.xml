@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="board">
+
+<select id="numMax" resultClass="int">
+	select nvl(max(num),0) from board
+</select>
+
+<insert id="insertData" parameterClass="com.board.BoardDTO">
+	insert into board(num,name,subject,email,content,pwd,ipAddr,hitCount,created)
+	values (#num#,#name#,#subject#,#email#,#content#,#pwd#,#ipAddr#,0,SYSDATE)
+</insert>
+
+<select id="dataCount" parameterClass="map" resultClass="int">
+	select nvl(count(*),0) from board
+	where $searchKey$ like '%' || #searchValue# || '%'
+</select>
+
+<select id="listData" parameterClass="map" resultClass="com.board.BoardDTO">
+	select * from (
+	select rownum rnum, data.* from (
+	select num,name,subject,email,hitCount,to_char(created,'YYYY-MM-DD') created from board
+	where $searchKey$ like '%' || #searchValue# || '%'
+	order by num desc) data)
+	<![CDATA[
+	where rnum>=#start# and rnum<=#end#
+	]]>
+</select>
+
+
+
+
+
+
+</sqlMap>

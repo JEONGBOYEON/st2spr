@@ -1,0 +1,26 @@
+<?xml  version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+ "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+<package name="board" extends="default" namespace="/bbs" >        
+
+	<action name="created" class="com.board.BoardAction" method="created">
+		
+		<interceptor-ref name="myPrepareParamsStack"></interceptor-ref>
+	
+		<result name="input">/board/created.jsp</result>
+		<result name="success" type="redirectAction">list</result>
+		
+	</action>
+	
+	
+	<action name="list" class="com.board.BoardAction" method="list">
+		
+		<interceptor-ref name="myPrepareParamsStack"/>
+		
+		<result name="success">/board/list.jsp</result>
+		
+	</action>
+
+</package>
+</struts>

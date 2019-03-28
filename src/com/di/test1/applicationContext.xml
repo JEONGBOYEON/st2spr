@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+    
+    <!-- bean하는게 클래스 = new 클래스()와 같은거 -->
+    
+    
+    
+    <!--  
+    1. 기본생성자 호출(의존성 주입)
+    -->
+    <bean id="testImpl1" class="com.di.test1.TestImpl1"/> 
+    <bean id="testImpl2" class="com.di.test1.TestImpl2"/> 
+    
+    
+    
+    <!-- 
+    2. 매개변수를 가진 오버로딩된 생성자 호출(의존성 주입)
+    
+    <bean id="testImpl1" class="com.di.test1.TestImpl1">
+    	 
+    	<constructor-arg>
+    		<value type="int">50</value>
+    	</constructor-arg>
+    	
+    	<constructor-arg>
+    		<value type="int">70</value>
+    	</constructor-arg>
+    </bean>
+    <bean id="testImpl2" class="com.di.test1.TestImpl2">
+    
+    	<constructor-arg value="초아">
+    	</constructor-arg>
+    	
+    	<constructor-arg>
+    		<value type="int">10</value>
+    	</constructor-arg>
+    </bean>
+    
+    
+    <bean id="testService" class="com.di.test1.TestService">
+    
+    	<constructor-arg>
+    		<ref bean="testImpl2"/>
+    	</constructor-arg>
+    </bean>
+    -->
+    
+    <!--
+     3.프로퍼티(매소드)를 이용한 의존성 주입 : 반드시 기본 생성자 
+    -->
+    
+    <bean id="testService" class="com.di.test1.TestService">
+    	<!-- property name은 testService의 setTest매소드에서 set을 빼고 나머지에서 소문자로 바꾼 이름 -->
+    	<property name="test">
+    		<ref bean="testImpl2" />
+    	</property>
+    </bean>
+    
+</beans>  
