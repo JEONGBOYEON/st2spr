@@ -39,18 +39,18 @@
 	
 	
 	
-	
+<!-- 
 	<security-constraint>
 	  <web-resource-collection>
 	  <web-resource-name>PreventViewingJSPs</web-resource-name>
 	     <description>웹 사용자가 JSP 파일로 직접 접근할 수 없도록 한다.</description>
 	     <url-pattern>*.jsp</url-pattern>
-	     <!--  <http-method>GET</http-method> -->
+	     <http-method>GET</http-method> 
 	     <http-method>POST</http-method>
 	  </web-resource-collection>
 	  <auth-constraint>
 	     <role-name></role-name>
 	  </auth-constraint>
 	</security-constraint>
-    <!-- 스트러츠 환경 정의 끝 -->
+ -->
 </web-app>
