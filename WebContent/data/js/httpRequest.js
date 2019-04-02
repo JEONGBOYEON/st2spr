@@ -55,7 +55,7 @@ function sendRequest(url,params,callback,method){
 	
 	//url처리
 	var httpUrl = url;
-	if(httpMethod="GET" && httpParams!=null){
+	if(httpMethod=="GET" && httpParams!=null){
 		httpUrl += "?" + httpParams;
 	}
 	
