@@ -84,4 +84,76 @@ public class MyUtil {
 		
 	}
 	
+	
+	public String pageIndexList(int currentPage,int totalPage){
+		
+		int numPerBlock = 5;
+		int currentPageSetup;
+		int n;
+		int page;
+		String strList = "";
+		
+		if(currentPage==0)
+			return "";
+		
+		//표시할 첫 페이지
+		currentPageSetup = (currentPage/numPerBlock) * numPerBlock;
+		
+		if(currentPage % numPerBlock == 0)
+			currentPageSetup = currentPageSetup - numPerBlock;
+		
+		//1페이지
+		if((totalPage>numPerBlock)&&currentPageSetup>0){
+			strList = "<a onclick='listPage(1);'>1</a>";
+		}
+		
+		//◀ : 총 페이지수가 numPerBlock 이상인 경우 
+		//이전 numPerBlock을 보여줌
+		n = currentPage - numPerBlock;
+		
+		if(totalPage > numPerBlock && currentPageSetup > 0){
+			strList += "<a onclick='listPage(" + n + ");'>◀</a>";
+		}
+		
+		
+		//바로가기 페이지
+		page = currentPageSetup + 1;
+		while((page <= totalPage) && (page <= currentPageSetup + numPerBlock)){
+			
+			if(page == currentPage){
+				strList += "<font color='Fuchsia'>" + page + "</font>";
+			}else{
+				strList += "<a onclick='listPage(" + page + ");'>" + page + "</a>";
+			}
+			
+			page++;
+			
+		}
+		
+		
+		//▶ :총 페이지 수가 numPerBlock 페이지 이상인 경우
+		//다음 numPerBlock페이지를 보여줌
+		n = currentPage + numPerBlock;
+		
+		if(totalPage - currentPageSetup > numPerBlock){
+			strList += "<a onclick='listPage(" + n + ");'>▶</a>";
+		}
+		
+		//마지막 페이지
+		if((totalPage > numPerBlock) && (currentPageSetup + numPerBlock < totalPage)){
+			strList += "<a onclick='listPage(" + totalPage + ");'>" +
+					totalPage + "</a>";
+		}
+
+		return strList;
+		
+		
+	}
+	
+	
 }
+
+
+
+
+

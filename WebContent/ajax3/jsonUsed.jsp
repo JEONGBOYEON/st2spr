@@ -61,6 +61,16 @@
 		printData += "userArray[0].phone[0].home[0]:" + homePhone1 + "<br/>";
 		printData += "userArray[0].phone[1].office[0]:" + officePhone1 + "<br/>";
 		
+		for(var i=0;i<userArray.length;i++){
+
+			var id = userArray[i].userId;
+			var name = userArray[i].name;
+			var age = userArray[i].age;
+
+			printData += id + "," + name + "," + age + "<br/>";
+			
+		}
+		
 		var resultDiv = document.getElementById("result");
 		resultDiv.innerHTML = printData;
 	}

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ibbs">
+
+<typeAlias alias="boardDTO" type="com.ibbs.BoardDTO"/>
+
+<!-- 최댓값 -->
+<select id="maxBoardNum" resultClass="int">
+	select nvl(max(boardNum),0) from ibbs
+</select>
+
+<!-- 데이터 입력 -->
+<insert id="insertData" parameterClass="boardDTO">
+	insert into ibbs (boardNum,name,email,subject,content,ipAddr,hitCount,created) 
+	values (#boardNum#,#name#,#email#,#subject#,#content#,#ipAddr#,0,sysdate)
+</insert>
+
+<update id="updateData" parameterClass="boardDTO">
+ 	update ibbs set name=#name#, subject=#subject#, email=#email#, content=#content# where boardNum=#boardNum#
+</update>
+
+<delete id="deleteData" parameterClass="int">
+	delete ibbs where boardNum=#boardNum#
+</delete> 
+
+<!-- 데이터 갯수 -->
+<select id="dataCount" resultClass="int" parameterClass="map">
+	 select nvl(count(boardNum),0) from ibbs
+	 where $searchKey$ like '%' || #searchValue# || '%'
+</select>
+
+<!-- 전체데이터 -->
+<!-- order by groupNum desc,orderNo asc) data) : 댓글이 바로 이어져서 보이게 하기 -->
+<select id="listData" resultClass="boardDTO" parameterClass="map">
+	select * from (
+	select rownum rnum, data.* from (
+	select boardNum,name,subject,hitCount,to_char(created,'YYYY-MM-DD') created from ibbs
+	where $searchKey$ like '%' || #searchValue# || '%'
+	order by boardNum desc) data)
+	<![CDATA[
+	where rnum>=#start# and rnum<=#end#
+	]]>
+</select>
+
+<!-- 조회수 증가 -->
+<update id="updateHitCount" parameterClass="int">
+ 	update ibbs set hitCount = hitCount+1 where boardNum = #boardNum#
+</update>
+
+
+<!-- 한개의 게시물 가져오기 -->
+<select id="readData" parameterClass="int" resultClass="boardDTO">
+	select boardNum,name,email,subject,content,ipAddr,hitCount,to_char(created,'YYYY-MM-DD') created from ibbs
+	where boardNum=#boardNum#
+</select>
+
+
+<!-- 이전글 -->
+<select id="preReadData" parameterClass="map" resultClass="boardDTO">
+<![CDATA[
+	select data.* from (
+	select boardNum,subject from ibbs
+	where ($searchKey$ like '%' || #searchValue# || '%') and
+	(boardNum>#boardNum#)
+	order by boardNum asc)data
+	where rownum=1
+]]>
+</select>
+
+<!-- 다음글 -->
+<select id="nextReadData" parameterClass="map" resultClass="boardDTO">
+<![CDATA[
+	select data.* from (
+	select boardNum,subject from ibbs
+	where ($searchKey$ like '%' || #searchValue# || '%') and
+	(boardNum<#boardNum#)
+	order by boardNum desc)data
+	where rownum=1
+]]>
+</select>
+
+
+<select id="numMaxComment" resultClass="int">
+	select nvl(max(commentNum),0) from ibbsComment 
+</select>
+
+<insert id="insertDataComment" parameterClass="com.ibbs.CommentDTO">
+	insert into ibbsComment(commentNum,boardNum,name,content,ipAddr,created)
+	values (#commentNum#,#boardNum#,#name#,#content#,#ipAddr#,sysdate)
+</insert>
+
+<select id="dataCountComment" resultClass="int" parameterClass="int">
+	select nvl(count(*),0) from ibbsComment where boardNum = #boardNum#
+</select>
+
+<select id="listDataComment" parameterClass="map" resultClass="com.ibbs.CommentDTO">
+	select * from(
+	select rownum rnum, data.*from(
+	select commentNum,name,content,ipAddr,created
+	from ibbsComment where boardNum = #boardNum# order by commentNum desc) data)
+<![CDATA[
+	where rnum>=#start# and rnum<=#end#
+]]>
+</select>
+
+<delete id="deleteDataComment" parameterClass="int">
+	delete ibbsComment where commentNum=#commentNum#
+</delete>
+
+</sqlMap>
+
